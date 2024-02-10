@@ -328,14 +328,16 @@ You will use the framework of tidymodel workflow, which will run these transform
 
 Since you've worked on it in MA679 please copy and paste your best model here.  
 ```{r,echo=TRUE}
-##
-##
+lmfit_2008<- lm(log(`SalePrice`) ~ `Year Built` + `Gr Liv Area` + `Overall Qual` + `Overall Cond` + `Neighborhood`+ `Bldg Type`+ `Pool Area`, data = ames_raw_2008)
+
+pred_2009<-exp(predict(lmfit_2008,newdata=ames_raw_2009))
+calc_loss(pred_2009,ames_raw_2009$SalePrice)
 ```
 
 Your answer:
 
 ~~~
-Please write your answer in full sentences.
+My best model in MA679 using year builtm ground living area, overall quality, overall condition, building type and neighborhood as my predictors.
 
 
 ~~~
@@ -343,30 +345,36 @@ Please write your answer in full sentences.
 Please perform feature engineering on the Ames housing data that you think will help with the prediction.
 
 ```{r,echo=TRUE}
-##
-##
+ames_raw$SalePrice1 <- scale(log(ames_raw$SalePrice))
+ames_raw$`Gr Liv Area1` <- scale(ames_raw$`Gr Liv Area`)
+ames_raw$`Pool Area1` <- scale(ames_raw$`Pool Area`)
+ames_raw$`Overall Qual1` <- ifelse(ames_raw$`Overall Qual` < 3, 3, ames_raw$`Overall Qual`)
+ames_raw$`Overall Cond1` <- ifelse(ames_raw$`Overall Qual` < 3, 3, ames_raw$`Overall Cond`)
 ```
 
 Your answer:
 
 ~~~
-Please write your answer in full sentences.
-
-
+For feature engineering, I try to use scaling and grouping for some predictors.
 ~~~
 
 Compare the result before and after the feature engineering step.
 
 ```{r,echo=TRUE}
-##
-##
+ames_raw_2008=ames_raw[ames_raw$`Yr Sold`<2008,]
+ames_raw_2009=ames_raw[ames_raw$`Yr Sold`>=2008,]
+
+lmfit_2008_new <- lm(SalePrice1 ~ `Year Built` + `Gr Liv Area1` + `Overall Qual1` + `Overall Cond1` + `Neighborhood`+ `Bldg Type`+ `Pool Area1`, data = ames_raw_2008)
+
+pred_2009<-exp(predict(lmfit_2008_new,newdata=ames_raw_2009))
+calc_loss(pred_2009,ames_raw_2009$SalePrice)
 ```
 
 
 Your answer:
 
 ~~~
-Please write your answer in full sentences.
+It shows that my calculation loss is decreased from 30460561 to 28764551
 
 
 ~~~
